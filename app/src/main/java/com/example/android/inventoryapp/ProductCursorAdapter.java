@@ -48,7 +48,7 @@ public class ProductCursorAdapter extends CursorAdapter {
         });
 
         nameTextView.setText(productName);
-        priceTextView.setText(String.valueOf(productPrice) + " " + context.getString(R.string.unit_product_price));
+        priceTextView.setText(String.format("%s %s", String.valueOf(productPrice), context.getString(R.string.unit_product_price)));
         quantityTextView.setText(String.valueOf(productQuantity));
     }
 }

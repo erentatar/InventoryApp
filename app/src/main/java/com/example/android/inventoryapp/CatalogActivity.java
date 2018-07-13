@@ -133,7 +133,7 @@ public class CatalogActivity extends AppCompatActivity
             if (rowsAffected > 0)
                 Toast.makeText(this, "One product was sold.", Toast.LENGTH_SHORT).show();
             else {
-                Toast.makeText(this, "An error occured. Try again later.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "An error occurred. Try again later.", Toast.LENGTH_SHORT).show();
                 Log.v("CatalogActivity", "Update failed when selling the product with id: " + productId);
             }
 

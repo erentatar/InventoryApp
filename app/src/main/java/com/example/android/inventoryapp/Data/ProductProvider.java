@@ -43,7 +43,7 @@ public class ProductProvider extends ContentProvider {
 
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        Cursor cursor = null;
+        Cursor cursor;
 
         int match = sUriMatcher.match(uri);
         switch (match) {
@@ -98,7 +98,7 @@ public class ProductProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        // Get writeable database
+        // Get writable database
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Track the number of rows that were deleted
@@ -214,7 +214,7 @@ public class ProductProvider extends ContentProvider {
             return 0;
         }
 
-        // Otherwise, get writeable database to update the data
+        // Otherwise, get writable database to update the data
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Perform the update on the database and get the number of rows affected

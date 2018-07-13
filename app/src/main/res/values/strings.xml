@@ -63,7 +63,7 @@
     <!-- Text hint for supplier phone field in the editor [CHAR LIMIT=30] -->
     <string name="hint_product_supplier_phone">Supplier Phone</string>
 
-    <!-- Units for price of the product (turkish liras) [CHAR LIMIT=5] -->
+    <!-- Units for price of the product (turkish lira) [CHAR LIMIT=5] -->
     <string name="unit_product_price">₺</string>
 
     <!-- Title text for the empty view, which describes the empty inventory image [CHAR LIMIT=50] -->
