@@ -14,4 +14,12 @@
 
     <!-- Primary dark color for the editor -->
     <color name="editorColorPrimaryDark">#689F38</color>
+
+    <color name="color_empty_subtitle_text">#A2AAB0</color>
+
+    <color name="color_product_name">#2B3D4D</color>
+
+    <color name="color_product_price">#AEB6BD</color>
+
+    <color name="color_product_quantity">#AEB6BD</color>
 </resources>

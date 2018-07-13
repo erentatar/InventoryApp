@@ -128,7 +128,6 @@ public class EditorActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_save:
                 saveProduct();
-                finish();
                 return true;
             case R.id.action_delete:
                 // Pop up confirmation dialog for deletion
@@ -221,7 +220,9 @@ public class EditorActivity extends AppCompatActivity implements
                         return;
 
                     Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                    startActivity(intent);
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
                 }
             });
         }
@@ -269,10 +270,13 @@ public class EditorActivity extends AppCompatActivity implements
         String supplierPhoneString = mSupplierPhoneEditText.getText().toString().trim();
 
         if (mCurrentProductUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
-                TextUtils.isEmpty(quantityString) && TextUtils.isEmpty(supplierNameString) &&
-                TextUtils.isEmpty(supplierPhoneString))
+                TextUtils.isEmpty(nameString) || TextUtils.isEmpty(priceString) ||
+                TextUtils.isEmpty(quantityString) || TextUtils.isEmpty(supplierNameString) ||
+                TextUtils.isEmpty(supplierPhoneString)) {
+            Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                    Toast.LENGTH_SHORT).show();
             return;
+        }
 
         ContentValues values = new ContentValues();
         values.put(ProductEntry.COLUMN_NAME, nameString);
@@ -295,6 +299,8 @@ public class EditorActivity extends AppCompatActivity implements
                 // Otherwise, the insertion was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_insert_product_successful),
                         Toast.LENGTH_SHORT).show();
+
+                finish();
             }
         } else {
 
@@ -309,6 +315,8 @@ public class EditorActivity extends AppCompatActivity implements
                 // Otherwise, the update was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_update_product_successful),
                         Toast.LENGTH_SHORT).show();
+
+                finish();
             }
         }
     }
