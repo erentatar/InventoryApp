@@ -113,7 +113,7 @@ public class ProductProvider extends ContentProvider {
             case PRODUCT_ID:
                 // Delete a single row given by the ID in the URI
                 selection = ProductEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsDeleted = db.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
@@ -155,7 +155,19 @@ public class ProductProvider extends ContentProvider {
         if (name == null) {
             throw new IllegalArgumentException("Product name is required.");
         }
-        
+
+        // Check that the price has a positive value
+        Double price = values.getAsDouble(ProductEntry.COLUMN_PRICE);
+        if (price != null && price < 0) {
+            throw new IllegalArgumentException("Price cannot be a negative value.");
+        }
+
+        // Check that the quantity has a positive value
+        Integer quantity = values.getAsInteger(ProductEntry.COLUMN_QUANTITY);
+        if (quantity != null && quantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be a negative value.");
+        }
+
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         long id = db.insert(ProductEntry.TABLE_NAME, null, values);
@@ -180,6 +192,20 @@ public class ProductProvider extends ContentProvider {
             String name = values.getAsString(ProductEntry.COLUMN_NAME);
             if (name == null) {
                 throw new IllegalArgumentException("Product name is required.");
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_PRICE)) {
+            Double price = values.getAsDouble(ProductEntry.COLUMN_PRICE);
+            if (price < 0) {
+                throw new IllegalArgumentException("Price cannot be a negative value.");
+            }
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_QUANTITY)) {
+            Integer quantity = values.getAsInteger(ProductEntry.COLUMN_QUANTITY);
+            if (quantity < 0) {
+                throw new IllegalArgumentException("Quantity cannot be a negative value.");
             }
         }
 

@@ -17,7 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.Data.ProductContract.ProductEntry;
@@ -85,6 +87,22 @@ public class EditorActivity extends AppCompatActivity implements
         mSupplierNameEditText.setOnTouchListener(mTouchListener);
         mSupplierPhoneEditText.setOnTouchListener(mTouchListener);
 
+        Button minusButton = findViewById(R.id.minus_button);
+        Button plusButton = findViewById(R.id.plus_button);
+
+        minusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decreaseQuantity();
+            }
+        });
+
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increaseQuantity();
+            }
+        });
     }
 
     @Override
@@ -184,7 +202,7 @@ public class EditorActivity extends AppCompatActivity implements
             double price = cursor.getDouble(priceColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             String supplierName = cursor.getString(supplierNameColumnIndex);
-            String supplierPhone = cursor.getString(supplierPhoneColumnIndex);
+            final String supplierPhone = cursor.getString(supplierPhoneColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
@@ -193,6 +211,19 @@ public class EditorActivity extends AppCompatActivity implements
             mSupplierNameEditText.setText(supplierName);
             mSupplierPhoneEditText.setText(supplierPhone);
 
+            ImageButton callButton = findViewById(R.id.call_button);
+            callButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String phone = String.valueOf(supplierPhone);
+
+                    if (TextUtils.isEmpty(phone))
+                        return;
+
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                    startActivity(intent);
+                }
+            });
         }
     }
 
@@ -352,4 +383,32 @@ public class EditorActivity extends AppCompatActivity implements
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
+    private void decreaseQuantity() {
+        String quantityText = mQuantityEditText.getText().toString().trim();
+        if (quantityText.isEmpty()) {
+            mQuantityEditText.setText("0");
+            return;
+        }
+
+        int quantity = Integer.parseInt(quantityText);
+        if (quantity == 0) return;
+
+        quantity--;
+        mQuantityEditText.setText(Integer.toString(quantity));
+    }
+
+    private void increaseQuantity() {
+        String quantityText = mQuantityEditText.getText().toString().trim();
+        if (quantityText.isEmpty()) {
+            mQuantityEditText.setText("0");
+            return;
+        }
+
+        int quantity = Integer.parseInt(quantityText);
+
+        quantity++;
+        mQuantityEditText.setText(Integer.toString(quantity));
+    }
+
 }

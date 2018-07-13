@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.android.inventoryapp.Data.ProductContract.ProductEntry;
 
@@ -33,7 +34,7 @@ public class CatalogActivity extends AppCompatActivity
         setContentView(R.layout.activity_catalog);
 
         // Setup FAB to open EditorActivity
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,7 +45,6 @@ public class CatalogActivity extends AppCompatActivity
 
         ListView productListView = findViewById(R.id.list);
 
-        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         productListView.setEmptyView(emptyView);
 
@@ -54,15 +54,9 @@ public class CatalogActivity extends AppCompatActivity
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Create new intent to go to {@link EditorActivity}
                 Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
-
                 Uri currentProductUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
-
-                // Set the URI on the data field of the intent
                 intent.setData(currentProductUri);
-
-                // Launch the {@link EditorActivity} to display the data for the current pet.
                 startActivity(intent);
             }
         });
@@ -126,5 +120,25 @@ public class CatalogActivity extends AppCompatActivity
     private void deleteAllProducts() {
         int rowsDeleted = getContentResolver().delete(ProductEntry.CONTENT_URI, null, null);
         Log.v("CatalogActivity", rowsDeleted + " rows deleted from inventory database");
+    }
+
+    public void saleProduct(int productId, int productQuantity) {
+        productQuantity = productQuantity - 1;
+        if (productQuantity >= 0) {
+            ContentValues values = new ContentValues();
+            values.put(ProductEntry.COLUMN_QUANTITY, productQuantity);
+            Uri updateUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, productId);
+            int rowsAffected = getContentResolver().update(updateUri, values, null, null);
+
+            if (rowsAffected > 0)
+                Toast.makeText(this, "One product was sold.", Toast.LENGTH_SHORT).show();
+            else {
+                Toast.makeText(this, "An error occured. Try again later.", Toast.LENGTH_SHORT).show();
+                Log.v("CatalogActivity", "Update failed when selling the product with id: " + productId);
+            }
+
+        } else {
+            Toast.makeText(this, "Product is out of stock.", Toast.LENGTH_SHORT).show();
+        }
     }
 }
